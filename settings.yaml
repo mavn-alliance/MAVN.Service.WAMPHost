@@ -1,0 +1,47 @@
+WampHostService:
+  Db:
+    LogsConnString:
+      settings-key: WampHostService-LogsConnString
+      types:
+        - AzureTableStorage
+  RabbitMq:
+    RabbitMqConnectionString:
+      settings-key: WalletManagementRabbitMQ
+  RealmName:
+    settings-key: WampHostService-RealmName
+
+Constants:
+  TokenSymbol:
+    settings-key: Constant-TokenSymbol
+  TokenFormatCultureInfo:
+    settings-key: Constant-TokenFormatCultureInfo
+  TokenNumberDecimalPlaces:
+    settings-key: Constant-TokenNumberDecimalPlaces
+  TokenIntegerPartFormat:
+    settings-key: Constant-TokenIntegerPartFormat
+
+SessionServiceClient:
+  ServiceUrl:
+    settings-key: SessionsServiceUrl
+
+PrivateBlockchainFacadeService:
+  ServiceUrl:
+    settings-key: PrivateBlockchainFacadeServiceUrl
+
+WalletManagementServiceClient:
+  ServiceUrl:
+    settings-key: WalletManagementServiceUrl
+
+SlackNotifications:
+  AzureQueue:
+    ConnectionString:
+      settings-key: SlackNotificationsConnString
+      types:
+        - AzureTableStorage
+    QueueName:
+      settings-key: SlackQueueName
+
+MonitoringServiceClient:
+  MonitoringServiceUrl:
+    settings-key: MonitoringServiceUrl
+
