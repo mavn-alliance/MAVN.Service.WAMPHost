@@ -27,7 +27,7 @@
 **/.idea/
 **/.metadata/
 **/.settings/
-/[Tt]est[Rr]esults/
+**/[Tt]est[Rr]esults/
 [Bb]in/
 [Oo]bj/
 [Dd]ebug/
