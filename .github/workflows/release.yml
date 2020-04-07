@@ -19,7 +19,7 @@ env:
   JOB_DOCKER_IMAGE:
   JOB_PROJECT:
   SERVICE_DOCKER_IMAGE: wamphost-service
-  SERVICE_PROJECT: ./contract/MAVN.Service.WAMPHost/MAVN.Service.WAMPHost.csproj
+  SERVICE_PROJECT: ./src/MAVN.Service.WAMPHost/MAVN.Service.WAMPHost.csproj
     
   
         
