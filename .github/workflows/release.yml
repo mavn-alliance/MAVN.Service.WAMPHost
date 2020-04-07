@@ -1,0 +1,111 @@
+name: release
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  RELEASE_CLIENT: true
+  RELEASE_CONTRACT: true
+  RELEASE_JOB: false
+  RELEASE_SERVICE: true
+  
+  CLIENT_PROJECT: ./client/MAVN.Service.WAMPHost.Client/MAVN.Service.WAMPHost.Client.csproj
+  CLIENT_RELEASE_DIR: ./client/MAVN.Service.WAMPHost.Client/bin/Release/*.nupkg
+  CONTRACT_PROJECT: ./contract/MAVN.Service.WAMPHost.Contract/MAVN.Service.WAMPHost.Contract.csproj
+  CONTRACT_RELEASE_DIR: ./contract/MAVN.Service.WAMPHost.Contract/bin/Release/*.nupkg
+  DOCKER_REPO: openmavn
+  JOB_DOCKER_IMAGE:
+  JOB_PROJECT:
+  SERVICE_DOCKER_IMAGE: wamphost-service
+  SERVICE_PROJECT: ./contract/MAVN.Service.WAMPHost/MAVN.Service.WAMPHost.csproj
+    
+  
+        
+jobs:
+  publish-release:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Authentication
+      - name: Login to docker hub
+        if: ${{ env.RELEASE_JOB || env.RELEASE_SERVICE }}
+        env:
+          USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login --username $USERNAME --password $PASSWORD $DOCKER_REPO
+
+      # Prepare environment
+      - uses: actions/checkout@v2
+      - name: Get semver from tag
+        id: version
+        uses: LykkeBusiness/get-semver-from-tag-action@v1.0.2
+        with:
+          tag: ${{ github.ref }}
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 2.2.207
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build solution
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: dotnet build --configuration Release --no-restore /p:Version=$VERSION
+      
+      # Build Docker images
+      - name: Build docker image for a job
+        if: ${{ env.RELEASE_JOB }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: |
+          dotnet publish $JOB_PROJECT --configuration Release --output ./job --no-build /p:Version=$VERSION
+          docker build --tag $DOCKER_REPO/$JOB_DOCKER_IMAGE:$VERSION ./job
+      - name: Build docker image for a service
+        if: ${{ env.RELEASE_SERVICE }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: |
+          dotnet publish $SERVICE_PROJECT --configuration Release --output ./service --no-build /p:Version=$VERSION
+          docker build --tag $DOCKER_REPO/$SERVCE_DOCKER_IMAGE:$VERSION ./service          
+      
+      # Pack NuGet packages
+      - name: Pack client NuGet package
+        if: ${{ env.RELEASE_CLIENT }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: dotnet pack $CLIENT_PROJECT --configuration Release --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
+      - name: Pack contract NuGet package
+        if: ${{ env.RELEASE_CONTRACT }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: dotnet pack $CONTRACT_PROJECT --configuration Release --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
+      
+      # Push Docker Images
+      - name: Push job docker image
+        if: ${{ env.RELEASE_JOB }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: push $DOCKER_REPO/$JOB_DOCKER_IMAGE:$VERSION
+      - name: Push service docker image
+        if: ${{ env.RELEASE_SERVICE }}
+        env:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+        run: push $DOCKER_REPO/$SERVICE_DOCKER_IMAGE:$VERSION
+      
+      # Push NuGet packages
+      - name: Push client NuGet package
+        if: ${{ env.RELEASE_CLIENT }}
+        env:
+          API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
+        run: dotnet nuget push $CLIENT_RELEASE_DIR --source https://api.nuget.org/v3/index.json --api-key $API_KEY
+      - name: Push contract NuGet package
+        if: ${{ env.RELEASE_CONTRACT }}
+        env:
+          API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
+        run: dotnet nuget push $CONTRACT_RELEASE_DIR --source https://api.nuget.org/v3/index.json --api-key $API_KEY
+      - name: Publish service docker
+        
+      # Create next release draft
