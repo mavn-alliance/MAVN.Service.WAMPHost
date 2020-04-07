@@ -69,7 +69,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
           dotnet publish $SERVICE_PROJECT --configuration Release --output ./service --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$SERVCE_DOCKER_IMAGE:$VERSION ./service          
+          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./service          
       
       # Pack NuGet packages
       - name: Pack client NuGet package
