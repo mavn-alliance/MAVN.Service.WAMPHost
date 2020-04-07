@@ -87,12 +87,12 @@ jobs:
         if: env.RELEASE_JOB == 'true'
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
-        run: push openmavn/$JOB_DOCKER_IMAGE:$VERSION
+        run: docker push openmavn/$JOB_DOCKER_IMAGE:$VERSION
       - name: Push service docker image
         if: env.RELEASE_SERVICE == 'true'
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
-        run: push openmavn/$SERVICE_DOCKER_IMAGE:$VERSION
+        run: docker push openmavn/$SERVICE_DOCKER_IMAGE:$VERSION
       
       # Push NuGet packages
       - name: Push client NuGet package
