@@ -61,15 +61,15 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $JOB_PROJECT --configuration Release --output ./job --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./job
+          dotnet publish $JOB_PROJECT --configuration Release --output ../../publish/job --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./publish/job
       - name: Build docker image for a service
         if: env.RELEASE_SERVICE == 'true'
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $SERVICE_PROJECT --configuration Release --output ./service --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./service          
+          dotnet publish $SERVICE_PROJECT --configuration Release --output ../../publish/service --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./publish/service
       
       # Pack NuGet packages
       - name: Pack client NuGet package
