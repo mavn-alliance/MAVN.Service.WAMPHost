@@ -12,10 +12,9 @@ env:
   RELEASE_SERVICE: true
   
   CLIENT_PROJECT: ./client/MAVN.Service.WAMPHost.Client/MAVN.Service.WAMPHost.Client.csproj
-  CLIENT_RELEASE_DIR: ./client/MAVN.Service.WAMPHost.Client/bin/Release/*.nupkg
+  CLIENT_NUGET: ./client/MAVN.Service.WAMPHost.Client/bin/Release/*.nupkg
   CONTRACT_PROJECT: ./contract/MAVN.Service.WAMPHost.Contract/MAVN.Service.WAMPHost.Contract.csproj
-  CONTRACT_RELEASE_DIR: ./contract/MAVN.Service.WAMPHost.Contract/bin/Release/*.nupkg
-  DOCKER_REPO: openmavn
+  CONTRACT_NUGET: ./contract/MAVN.Service.WAMPHost.Contract/bin/Release/*.nupkg
   JOB_DOCKER_IMAGE:
   JOB_PROJECT:
   SERVICE_DOCKER_IMAGE: wamphost-service
@@ -61,15 +60,15 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $JOB_PROJECT --configuration Release --output ./job --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./job
+          dotnet publish $JOB_PROJECT --configuration Release --output ../../publish/job --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./publish/job
       - name: Build docker image for a service
         if: env.RELEASE_SERVICE == 'true'
         env:
           VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $SERVICE_PROJECT --configuration Release --output ./service --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./service          
+          dotnet publish $SERVICE_PROJECT --configuration Release --output ../../publish/service --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./publish/service
       
       # Pack NuGet packages
       - name: Pack client NuGet package
@@ -100,11 +99,11 @@ jobs:
         if: env.RELEASE_CLIENT == 'true'
         env:
           API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
-        run: dotnet nuget push $CLIENT_RELEASE_DIR --source https://api.nuget.org/v3/index.json --api-key $API_KEY
+        run: dotnet nuget push $CLIENT_NUGET --source https://api.nuget.org/v3/index.json --api-key $API_KEY
       - name: Push contract NuGet package
         if: env.RELEASE_CONTRACT == 'true'
         env:
           API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
-        run: dotnet nuget push $CONTRACT_RELEASE_DIR --source https://api.nuget.org/v3/index.json --api-key $API_KEY
+        run: dotnet nuget push $CONTRACT_NUGET --source https://api.nuget.org/v3/index.json --api-key $API_KEY
         
       # Create next release draft
