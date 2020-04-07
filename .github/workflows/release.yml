@@ -28,20 +28,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Extract release version
-      - name: Get semver from tag
+      # Set release version
+      - name: Get release version from tag
         id: version
         uses: LykkeBusiness/get-semver-from-tag-action@v1.0.2
         with:
           tag: ${{ github.ref }}
-            
+      - name: Set version for release
+        uses: allenevans/set-env@v1.0.0
+        with:
+          VERSION: ${{ steps.version.outputs.non-prefixed }}
+
       # Login to Docker Hub
       - name: Login to docker hub
         if: env.RELEASE_JOB == 'true' || env.RELEASE_SERVICE == 'true'
         env:
-          USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login --username $USERNAME --password $PASSWORD
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
 
       # Build solution      
       - name: Setup .NET Core
@@ -51,48 +55,34 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build solution
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: dotnet build --configuration Release --no-restore /p:Version=$VERSION
       
       # Build Docker images
       - name: Build docker image for a job
         if: env.RELEASE_JOB == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $JOB_PROJECT --configuration Release --output ../../publish/job --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./publish/job
+          dotnet publish $JOB_PROJECT --configuration Release --output ../../docker/job --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$JOB_DOCKER_IMAGE:$VERSION ./docker/job
       - name: Build docker image for a service
         if: env.RELEASE_SERVICE == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: |
-          dotnet publish $SERVICE_PROJECT --configuration Release --output ../../publish/service --no-build /p:Version=$VERSION
-          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./publish/service
+          dotnet publish $SERVICE_PROJECT --configuration Release --output ../../docker/service --no-build /p:Version=$VERSION
+          docker build --tag openmavn/$SERVICE_DOCKER_IMAGE:$VERSION ./docker/service
       
       # Pack NuGet packages
       - name: Pack client NuGet package
         if: env.RELEASE_CLIENT == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
-        run: dotnet pack $CLIENT_PROJECT --configuration Release --output ./packages --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
+        run: dotnet pack $CLIENT_PROJECT --configuration Release --output ../../packages --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
       - name: Pack contract NuGet package
         if: env.RELEASE_CONTRACT == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
-        run: dotnet pack $CONTRACT_PROJECT --configuration Release --output ./packages --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
+        run: dotnet pack $CONTRACT_PROJECT --configuration Release --output ../../packages --no-build --include-symbols --include-source /p:SymbolPackageFormat=snupkg /p:Version=$VERSION
       
       # Push Docker Images
       - name: Push job docker image
         if: env.RELEASE_JOB == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: docker push openmavn/$JOB_DOCKER_IMAGE:$VERSION
       - name: Push service docker image
         if: env.RELEASE_SERVICE == 'true'
-        env:
-          VERSION: ${{ steps.version.outputs.non-prefixed }}
         run: docker push openmavn/$SERVICE_DOCKER_IMAGE:$VERSION
       
       # Push NuGet packages
