@@ -1,8 +1,8 @@
 ﻿using JetBrains.Annotations;
 using Lykke.Sdk.Settings;
-using Lykke.Service.PrivateBlockchainFacade.Client;
-using Lykke.Service.Sessions.Client;
-using Lykke.Service.WalletManagement.Client;
+using MAVN.Service.PrivateBlockchainFacade.Client;
+using MAVN.Service.Sessions.Client;
+using MAVN.Service.WalletManagement.Client;
 
 namespace MAVN.Service.WAMPHost.Settings
 {

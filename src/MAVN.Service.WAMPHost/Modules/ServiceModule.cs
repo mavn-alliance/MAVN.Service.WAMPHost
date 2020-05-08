@@ -2,9 +2,9 @@
 using JetBrains.Annotations;
 using Lykke.Common;
 using Lykke.Sdk;
-using Lykke.Service.PrivateBlockchainFacade.Client;
-using Lykke.Service.Sessions.Client;
-using Lykke.Service.WalletManagement.Client;
+using MAVN.Service.PrivateBlockchainFacade.Client;
+using MAVN.Service.Sessions.Client;
+using MAVN.Service.WalletManagement.Client;
 using Lykke.SettingsReader;
 using MAVN.Service.WAMPHost.Domain.Services;
 using MAVN.Service.WAMPHost.DomainServices;

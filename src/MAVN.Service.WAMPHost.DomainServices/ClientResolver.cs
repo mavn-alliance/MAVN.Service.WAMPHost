@@ -4,7 +4,7 @@ using System.Linq;
 using Common.Log;
 using JetBrains.Annotations;
 using Lykke.Common.Log;
-using Lykke.Service.Sessions.Client;
+using MAVN.Service.Sessions.Client;
 using MAVN.Service.WAMPHost.Domain.Services;
 using Microsoft.Extensions.Caching.Memory;
 

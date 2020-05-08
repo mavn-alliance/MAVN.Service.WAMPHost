@@ -8,11 +8,11 @@
     <ProjectReference Include="..\MAVN.Service.WAMPHost.Domain\MAVN.Service.WAMPHost.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Falcon.Service.PrivateBlockchainFacade.Client" Version="2.9.0" />
-    <PackageReference Include="Falcon.Service.PrivateBlockchainFacade.Contract" Version="2.13.0" />
-    <PackageReference Include="Falcon.Service.Sessions.Client" Version="4.0.0" />
-    <PackageReference Include="Falcon.Service.WalletManagement.Client" Version="3.5.0" />
-    <PackageReference Include="Falcon.Service.WalletManagement.Contract" Version="3.8.0" />
     <PackageReference Include="Lykke.RabbitMqBroker" Version="7.12.0" />
+    <PackageReference Include="MAVN.Service.PrivateBlockchainFacade.Client" Version="1.1.0" />
+    <PackageReference Include="MAVN.Service.PrivateBlockchainFacade.Contract" Version="1.1.0" />
+    <PackageReference Include="MAVN.Service.Sessions.Client" Version="1.0.1" />
+    <PackageReference Include="MAVN.Service.WalletManagement.Client" Version="1.0.1" />
+    <PackageReference Include="MAVN.Service.WalletManagement.Contract" Version="1.0.1" />
   </ItemGroup>
 </Project>

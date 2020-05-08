@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using Lykke.Logs;
-using Lykke.Service.Sessions.Client;
-using Lykke.Service.Sessions.Client.Models;
+using MAVN.Service.Sessions.Client;
+using MAVN.Service.Sessions.Client.Models;
 using MAVN.Service.WAMPHost.DomainServices;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
