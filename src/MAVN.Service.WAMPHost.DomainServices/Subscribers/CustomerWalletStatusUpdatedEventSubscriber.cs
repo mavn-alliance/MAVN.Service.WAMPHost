@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Lykke.Common.Log;
-using Lykke.Service.WalletManagement.Contract.Events;
+using MAVN.Service.WalletManagement.Contract.Events;
 using MAVN.Service.WAMPHost.Domain.Services;
 
 namespace MAVN.Service.WAMPHost.DomainServices.Subscribers

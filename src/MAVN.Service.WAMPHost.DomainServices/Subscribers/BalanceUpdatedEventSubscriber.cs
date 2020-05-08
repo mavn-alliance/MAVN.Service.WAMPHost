@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Common.Log;
-using Lykke.Service.PrivateBlockchainFacade.Contract.Events;
+using MAVN.Service.PrivateBlockchainFacade.Contract.Events;
 using MAVN.Service.WAMPHost.Domain.Services;
 
 namespace MAVN.Service.WAMPHost.DomainServices.Subscribers

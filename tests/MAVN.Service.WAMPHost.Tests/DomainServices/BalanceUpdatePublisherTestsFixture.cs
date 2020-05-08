@@ -1,7 +1,7 @@
 ﻿using System;
 using Lykke.Logs;
-using Lykke.Service.PrivateBlockchainFacade.Client;
-using Lykke.Service.PrivateBlockchainFacade.Client.Models;
+using MAVN.Service.PrivateBlockchainFacade.Client;
+using MAVN.Service.PrivateBlockchainFacade.Client.Models;
 using MAVN.Service.WAMPHost.Domain.Services;
 using MAVN.Service.WAMPHost.DomainServices;
 using Moq;
